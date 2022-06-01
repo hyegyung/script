@@ -1,0 +1,222 @@
+1. str관련 c 
+vi
+
+=====
+fgets(buff,sizeof(buf),fp); //파일에서 읽어오기
+strcpy(var,buff);// 버퍼에 저장
+strcat(arr1,arr2)
+strncat(arr1,arr2,3)//arr1에 arr2를 3만큼 결합
+sprintf(arr1,"%s ",arr2);
+====
+memcpy(Log,logproxy->servicename,4);
+strncpy(lognus3->buf,"KRW",FORMAT); //defined된 FORMAT에 맞춰 스트링 buf에 저장
+strcpy(buff,buf2);//buf2에서 buff로저장
+
+====(proxy2nus3()참조)==> 이미 logproxy->UserAgent에 데이터 정리된 이후에 사용.(원시로그 만드는 소스 찾아보면 더 쉬울듯)
+<url 구분>
+if((Token=strtok(buff,"//"))==NULL) return FAIL; // 이거 http: 구분
+if((Token=strtok(buff,"/"))==NULL) RETURN FAIL;
+strncpy(lognud3->serv_url1, Token, LEN_SERV_URL1); // host_name
+
+if((Token = strtok(NULL, " ")) == NULL) strcpy(buff, "");
+else sprintf(buff, "/%s", Token);
+strncpy(lognud3->serv_url2, buff, LEN_SERV_URL2);//size만큼 copy
+
+
+============
+// 14. 0:정상과금,1:비과금(error_code가 성공이면 '0')
+if((strcmp(logproxy->HttpResponseCode, "200") >=0 ) &&
+   (strcmp(logproxy->HttpResponseCode,"400")<0 ) ) { // Download Succ
+     strncpy(lognud3->serv_delivery_result, "0", LEN_SERV_DELIVERY_RESULT);
+ }
+ else
+ strncpy(lognud3->serv_delivery_result, "1", LEN_SERV_DELIVERY_RESULT);
+===========
+
+strcmp(a,b); 
+memcmp(a,b,size); //size만큼만 비교
+
+==========(버퍼사이즈x, 저장된 str길이)
+    SID_find(logproxy->Url, inbuff);
+    if( strlen(inbuff) == 15 ) strncpy(in_SID, inbuff, 15);
+
+    if(!memcmp(logproxy->ServiceName, "7001", 4) ) { // 2004.07.27
+        strncpy(inbuff, in_SID, 15);
+        if (!memcmp(inbuff, "610016100171", 12) || // 프리미엄 또는 레귤러
+            !memcmp(inbuff, "610016100172", 12) || // 종량제 또는 오픈ND
+
+==============
+sprintf(inbuff,"%3.3s%s",logproxy->UserAgent, buff); // 뒤에 두 str inbuff에 출력(저장)
+
+----------------- itcdr 내용참조 ----------------------------------------
+
+
+========(char비교하면서 해당 서비스 번호(division) 할당)
+
+            else if ((inbuff[12] == '1' || inbuff[12] == '2') && inbuff[14] == 'D') {
+                strncpy(lognud3->char_system_division, "0018", LEN_CHAR_SYSTEM_DIVISION);
+            }
+
+
+======================
+    // 19. Contents Delivery System  - 01:pda(7004), 11:nate drive(....), 11:Yahoo gugi(7030)
+    if(!memcmp(logproxy->ServiceName, "7004", 4) ) {
+        strncpy(lognud3->char_contents_system, "01", LEN_CHAR_CONTENTS_SYSTEM);
+    }
+    else {
+        strncpy(lognud3->char_contents_system, "11", LEN_CHAR_CONTENTS_SYSTEM);
+    }
+======================( UA 관련 flag)
+        /* Auth : 2013.02.27 (YJH) */
+    if(!memcmp(logproxy->ServiceName, "17070", 5) || !memcmp(logproxy->ServiceName, "7020", 4) ) {
+        // 39. 0:UA Field, 1:UA Profile, X:Unknown (현 TIG는 UA만 있음)
+        strncpy(lognud3->devi_ua_flag, "X", LEN_DEVI_UA_FLAG);
+        // 40. User Agent is NULL
+    }
+    else {
+        // 39. 0:UA Field, 1:UA Profile, X:Unknown (현 TIG는 UA만 있음)
+        strncpy(lognud3->devi_ua_flag, "0", LEN_DEVI_UA_FLAG);
+        // 40. User Agent
+        strncpy(lognud3->devi_ua_profile, logproxy->UserAgent, LEN_DEVI_UA_PROFILE);
+    }
+
+=====================
+    // 44. Calling ID (발신 MIN/IMSI, Client ID)
+    memset(buff, 0x00, sizeof(buff));
+    memset(inbuff, 0x00, sizeof(inbuff));
+    strncpy(inbuff, logproxy->UserAgent, LEN_DEVI_UA_PROFILE);
+    if( strlen(inbuff) > 31 ) strncpy(buff, inbuff+25, 8); // 99990000
+    else  return RETURN_FAIL;
+    if(isNumeric(buff) == RETURN_FAIL) return RETURN_FAIL;
+
+
+        // 국번 찾기
+    if(!memcmp(logproxy->UserAgent, "SKT", 3) ) sprintf(inbuff, "011%s", buff);
+    else if(!memcmp(logproxy->UserAgent, "STI", 3) ) sprintf(inbuff, "017%s", buff);
+    else if(!memcmp(logproxy->UserAgent, "KTF", 3) ) sprintf(inbuff, "016%s", buff);
+    else if(!memcmp(logproxy->UserAgent, "HSP", 3) ) sprintf(inbuff, "018%s", buff);
+    else if(!memcmp(logproxy->UserAgent, "LGT", 3) ) sprintf(inbuff, "019%s", buff);
+    else if(!memcmp(logproxy->UserAgent, "010", 3) ) sprintf(inbuff, "010%s", buff);
+
+==> UA의 처음 세자리는 국번, 이후 끝에서 8자리 제외한 중간에는 발신 MIN/IMSI, Client ID 등이다
+
+
+
+=============
+
+
+// 45. Calling ID Indicator
+    if(lognud3->cust_calling_id[0] == 'I' ) { // 'Ixx' IRM
+        strncpy(lognud3->cust_calling_id_ind, "2", LEN_CUST_CALLING_ID_IND);
+    }
+    else {
+        strncpy(lognud3->cust_calling_id_ind, "0", LEN_CUST_CALLING_ID_IND);
+    }
+
+    // 47.   48.
+    strncpy(lognud3->cust_charging_id, lognud3->cust_calling_id, LEN_CUST_CHARGING_ID);
+    strncpy(lognud3->cust_charging_id_ind, lognud3->cust_calling_id_ind, LEN_CUST_CHARGING_ID_IND);
+.
+
+
+================<DCMF_ID_FIND> SUCCESS만 반환(DCMF있는 것확인)
+< 해당 문자열 찾아서 주소 반환>
+
+    strcpy(Buf, URL);
+    if((tempBuf1 = strstr(Buf, "DCMF_PID=")) == NULL) {
+        if((tempBuf1 = strstr(Buf, "dcmf_pid=")) == NULL) {
+            printf("not DCMF_PID find error [%s]\n", Buf);
+            return(RETURN_FAIL);
+        }
+    }
+
+
+
+    if((tempBuf2 = strtok(tempBuf1, "=")) == NULL) { // "DCMF_PID"
+        printf("strtokVal  error [%s]\n", tempBuf1);
+        return(RETURN_FAIL);
+    }
+//    if((tempBuf2 = strtok(NULL, "=")) == NULL) { // "DCMF_PID"의 value
+//        printf("strtokVal  error [%s]\n", tempBuf1);
+//        return(RETURN_FAIL);
+//    }
+
+
+
+===================<DCMF_ID_GET>
+
+<'DCMF_ID' 찾고
+이후 value 저장>
+
+  strcpy(Buf, URL);
+    if((tempBuf1 = strstr(Buf, "DCMF_PID=")) == NULL) {
+        if((tempBuf1 = strstr(Buf, "dcmf_pid=")) == NULL) {
+            printf("not DCMF_PID find error [%s]\n", Buf);
+            return(RETURN_FAIL);
+        }
+    }
+//printf("DCMF_PID 11111111. [%s]\n", tempBuf1);
+    if((tempBuf2 = strtok(tempBuf1, "=")) == NULL) { // "DCMF_PID"
+        printf("strtokVal  error [%s]\n", tempBuf1);
+        return(RETURN_FAIL);
+    }
+    if((tempBuf2 = strtok(NULL, "=")) == NULL) { // "DCMF_PID"의 value
+        printf("strtokVal  error [%s]\n", tempBuf1);
+        return(RETURN_FAIL);
+    }
+printf("DCMF_PID 22222222. [%s]\n", tempBuf2);
+    if(strlen(tempBuf2) > LEN_CHAR_PRODUCT_ID-1) {
+        strncpy(out_dcmf, tempBuf2, LEN_CHAR_PRODUCT_ID); // LEN_CHAR_PRODUCT_ID 10
+        out_dcmf[LEN_CHAR_PRODUCT_ID] = 0x00;
+    }
+
+
+=========================== strstr 이외에 다른 방법
+
+
+int SID_DCMF_find(char *URL)
+{
+    int len, ii, ret;
+    int sid_idx=0, sid_temp=0;
+    int dcmf_idx=0, dcmf_temp=0;
+
+
+    len = strlen(URL);
+//printf("....input URL [%s] len[%d]\n", URL, len);
+    for(ii=len-5; ii>=0; ii--) {
+//printf("comp URL [%s]\n", URL+ii);
+        if( !memcmp(URL+ii, "SERVICE_ID=", 11 )) {
+            sid_idx = ii;
+            break;
+        }
+    }
+    for(ii=len-5; ii>=0; ii--) {
+        if( !memcmp(URL+ii, "service_id=", 11 )) {
+            sid_temp = ii;
+            break;
+        }
+    }
+    if(sid_idx < sid_temp) sid_idx=sid_temp;
+
+    for(ii=len-5; ii>=0; ii--) {
+//printf("comp URL [%s]\n", URL+ii);
+        if( !memcmp(URL+ii, "DCMF_PID=", 9 )) {
+            dcmf_idx = ii;
+            break;
+        }
+    }
+    for(ii=len-5; ii>=0; ii--) {
+        if( !memcmp(URL+ii, "dcmf_pid=", 9 )) {
+            dcmf_temp = ii;
+            break;
+        }
+    }
+    if(dcmf_idx < dcmf_temp) dcmf_idx=dcmf_temp;
+
+    if( sid_idx==0 && dcmf_idx==0 ) ret=0;
+    else if( sid_idx > dcmf_idx ) ret=2;
+    else ret=3;
+printf("sid[%d] dcmf[%d]\n ret[%d]", sid_idx, dcmf_idx, ret);
+
+    return(ret);
+}

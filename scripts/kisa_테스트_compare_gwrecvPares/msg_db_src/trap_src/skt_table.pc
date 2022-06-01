@@ -1,0 +1,491 @@
+#include "skt_table.h"
+
+#include <sqlca.h>
+#include <stdlib.h>
+#include <sqlcpr.h>
+
+EXEC SQL INCLUDE SQLCA;
+EXEC SQL INCLUDE SQLDA;
+
+int connect_db(char *cstr)
+{
+	EXEC SQL CONNECT :cstr;
+
+	if(SQLCODE != ORA_SQLOK)
+		return SQLCODE;
+
+	return ROK;
+}
+
+int disconnect_db(void)
+{
+	EXEC SQL COMMIT WORK RELEASE;
+
+	if(SQLCODE != ORA_SQLOK)
+		return SQLCODE;
+
+	return ROK;
+}
+
+int select_tm_sfs_sms(char *szQuery, TmSfsSms *pTmSfsSms, int *nTmSfsSmsCnt)
+{
+	int i, nCnt = 0;
+	char szVal[7][512];
+	TmSfsSms temp[MAX_SELECT_CNT];
+
+	EXEC SQL PREPARE tm_sfs_sms FROM :szQuery;
+
+	EXEC SQL DECLARE tm_sfs_sms_cur CURSOR FOR tm_sfs_sms;
+
+	EXEC SQL OPEN tm_sfs_sms_cur;
+
+	memset(&temp, 0x00, sizeof(temp));
+
+	for(nCnt = 0; nCnt < MAX_SELECT_CNT; )
+	{
+		memset(szVal, 0x00, sizeof(szVal));
+
+		EXEC SQL FETCH tm_sfs_sms_cur INTO :szVal[0], :szVal[1], :szVal[2], :szVal[3], :szVal[4], :szVal[5], :szVal[6];
+		if(SQLCODE == HSNODATA)
+		{
+			break;
+		}
+		else if(SQLCODE != ORA_SQLOK)
+		{
+			EXEC SQL CLOSE tm_sfs_sms_cur;
+			return SQLCODE;
+		}
+
+		for(i = 0; i < 7; i++)
+		{
+			db_right_trim(szVal[i]);
+		}
+
+		MoveChrVal(temp[nCnt].szSmsSeq			, szVal[0]);
+		MoveChrVal(temp[nCnt].szSrcNum			, szVal[1]);
+		MoveChrVal(temp[nCnt].szCbNum			, szVal[2]);
+		MoveChrVal(temp[nCnt].szSmsMsg			, szVal[3]);
+		MoveChrVal(temp[nCnt].szSpamPattern1	, szVal[4]);
+		MoveChrVal(temp[nCnt].szSpamPattern2	, szVal[5]);
+		MoveChrVal(temp[nCnt].szSaveDt			, szVal[6]);
+
+		nCnt++;
+	}
+
+	EXEC SQL CLOSE tm_sfs_sms_cur;
+
+	memcpy(pTmSfsSms, &temp, sizeof(struct __tmsfssms_st_) * nCnt);
+	*nTmSfsSmsCnt = nCnt;
+
+	return ROK;
+}
+
+int insert_tm_sfs_stas_skt_result(TmSfsStasSktResult *szSpamData, int nCnt)
+{
+	int	i;
+	int nInsert = 0;
+	char szStrQuery[2048] = {0, };
+
+	EXEC SQL savepoint stas_skt_ins;
+
+	for(i = 0; i < nCnt; i++)
+	{
+		if((strlen(szSpamData[i].szSrcNum) == 0) || (strlen(szSpamData[i].szSmsMsg) == 0))
+			continue;
+
+		sprintf(szStrQuery, "INSERT INTO TM_SFS_STAS_SKT_RESULT (SMS_SEQ, SRC_NUM, CB_NUM, SMS_MSG, SPAM_PATTERN1, SPAM_PATTERN2, SAVE_DT) VALUES(:v1, :v2, :v3, :v4, :v5, :v6, :v7)");
+
+		EXEC SQL PREPARE stas_skt_result FROM :szStrQuery;
+
+		EXEC SQL EXECUTE stas_skt_result USING :szSpamData[i];
+
+		if(SQLCODE != ORA_SQLOK || sqlca.sqlerrd[2] != 1)
+		{
+			logwrite(FL, "failed Insert : SQLCODE(%d)(%d) ORA_SQLMSG(%*s) - SEQ(%s) MINNO(%s)", SQLCODE, sqlca.sqlerrd[2], ORA_SQLMSG, szSpamData[i].szSmsSeq, szSpamData[i].szCbNum);
+		}
+		else
+		{
+			nInsert++;
+		}
+	}
+
+	EXEC SQL commit work;
+
+	logwrite(FL, "INSERT Count[%d] TM_SFS_STAS_SKT_RESULT OK!!!", nInsert);
+
+	return ORA_SQLOK;
+}
+
+int count_tm_sfs_nate(char *szQuery, int *nTmSfsSmsCnt)
+{
+	int nCnt = 0;
+
+
+	EXEC SQL PREPARE tm_sfs_nate_count FROM :szQuery;
+
+	EXEC SQL DECLARE tm_sfs_nate_count_cur CURSOR FOR tm_sfs_nate_count;
+
+	EXEC SQL OPEN tm_sfs_nate_count_cur;
+
+
+
+	EXEC SQL FETCH tm_sfs_nate_count_cur INTO :nCnt;
+
+	if(SQLCODE == HSNODATA)
+	{
+		return RFAIL ;
+	}
+	else if(SQLCODE != ORA_SQLOK)
+	{
+		EXEC SQL CLOSE tm_sfs_nate_count_cur;
+		return SQLCODE;
+	}
+
+	EXEC SQL CLOSE tm_sfs_nate_count_cur;
+
+	*nTmSfsSmsCnt = nCnt;
+
+	return ROK;
+}
+
+
+
+
+int select_tm_sfs_sms_file(char *szQuery,char *filePath, int SELECT_CNT,char *tbName)
+{
+	int i,nCnt;
+	char num1[13];
+	char num2[13];
+
+
+	EXEC SQL PREPARE tm_sfs_nate1 FROM :szQuery;
+
+	EXEC SQL DECLARE tm_sfs_nate_cur1 CURSOR FOR tm_sfs_nate1;
+
+	EXEC SQL OPEN tm_sfs_nate_cur1;
+
+
+	for(nCnt = 0; nCnt < SELECT_CNT; )
+	{
+		memset(num1, 0x00, sizeof(num1));
+		memset(num2, 0x00, sizeof(num2));
+
+		EXEC SQL FETCH tm_sfs_nate_cur1 INTO :num1, :num2;
+		if(SQLCODE == HSNODATA)
+		{
+			break;
+		}
+		else if(SQLCODE != ORA_SQLOK)
+		{
+			EXEC SQL CLOSE tm_sfs_nate_cur1;
+			return SQLCODE;
+		}
+
+		wRiteSfm(filePath,num1,num2,tbName);
+
+		nCnt++;
+	}
+
+	EXEC SQL CLOSE tm_sfs_nate_cur1;
+
+
+	return ROK;
+}
+
+
+
+int insert_tm_sfs_sms(char *filePath, char *tbName)
+{
+	int     i;
+	int nInsert = 0;
+	char szStrQuery[2048] = {0, };
+	FILE* in;
+	char num[2][14];
+
+
+	EXEC SQL savepoint stas_skt_ins;
+
+	if ( (in = fopen(filePath, "r")) == NULL)
+	{
+		printf(" Cannot open file : %s\n", filePath);
+
+		return -1;
+
+	}
+	else{
+		while( 0 < fscanf( in, "%s %s", num[0],num[1]))
+		{
+			sprintf(szStrQuery, "INSERT INTO %s  VALUES(:v1, :v2)",tbName);
+			printf("%s %s %s\n",szStrQuery,num[0],num[1]);
+			EXEC SQL PREPARE stas_skt_result FROM :szStrQuery;
+			EXEC SQL EXECUTE stas_skt_result USING :num[0],:num[1];
+			if(SQLCODE != ORA_SQLOK || sqlca.sqlerrd[2] != 1)
+			{
+				printf("failed Insert : SQLCODE(%d)(%d) ORA_SQLMSG(%*s)\n", SQLCODE, sqlca.sqlerrd[2], ORA_SQLMSG);
+			}
+			else
+			{
+				nInsert++;
+			}
+
+		}
+
+		fclose( in);
+	}
+
+	EXEC SQL commit work;
+
+
+	return ROK;
+}
+
+int update_cds_user(char *filePath, char *tbName)
+{
+	int     i;
+	int nInsert = 0;
+	char szStrQuery[2048] = {0, };
+	FILE* in;
+	char num[3][14];
+	char ustc1[2];
+	char ustc2[2];
+	char ustc3[2];
+	char ustc4[2];
+	char ustc5[2];
+	int ustate=0;
+	int tmp_ust1=0;
+	int tmp_ust2=0;
+	int tmp_ust3=0;
+	int tmp_ust4=0;
+	int tmp_ust5=0;
+
+	memset(num,0x00,sizeof(num));
+
+	EXEC SQL savepoint stas_skt_ins;
+
+	if ( (in = fopen(filePath, "r")) == NULL)
+	{
+									printf(" Cannot open file : %s\n", filePath);
+
+									return -1;
+
+	}
+	else{
+									sprintf(szStrQuery, "UPDATE CDS_USER SET USERSTATE=(:v1 + (select NVL(MOD(USERSTATE,2),1) from cds_user where   carrier=:v2 and min_num=:v3)) where carrier=:v4 and min_num=:v5 and  TO_CHAR(UDATE,'YYYYMMDD') < 20131022");
+									while( 0 < fscanf( in, "%s %s %s %s %s %s %s", num[0],num[1],ustc1,ustc2,ustc3,ustc4,ustc5))
+									{
+																	if( strlen(ustc1) > 0)             
+																	{
+																									tmp_ust1=atoi(ustc1);
+																									tmp_ust2=atoi(ustc2);
+																									tmp_ust3=atoi(ustc3);
+																									tmp_ust4=atoi(ustc4);
+																									tmp_ust5=atoi(ustc5);
+																									printf("%d %d %d %d %d\n",tmp_ust1,tmp_ust2,tmp_ust3,tmp_ust4,tmp_ust5);
+																									if(tmp_ust1 == 1)
+																																	ustate+=32;
+																									if(tmp_ust2 == 1)
+																																	ustate+=16;
+																									if(tmp_ust3 == 1)
+																																	ustate+=8;
+																									if(tmp_ust4 == 1)
+																																	ustate+=4;
+																									if(tmp_ust5 == 1)
+																																	ustate+=2;
+																	}
+																	else
+																	{
+																									printf("data error\n");
+																									break;
+																	}
+																	printf("%s\n %s %s %d \n",szStrQuery,num[0],num[1],ustate);
+																	EXEC SQL PREPARE stas_skt_result FROM :szStrQuery;
+																	EXEC SQL EXECUTE stas_skt_result USING :ustate,:num[0],:num[1],:num[0],:num[1];
+																	if(SQLCODE != ORA_SQLOK || sqlca.sqlerrd[2] != 1)
+																	{
+																									printf("failed Insert : SQLCODE(%d)(%d) ORA_SQLMSG(%*s)\n", SQLCODE, sqlca.sqlerrd[2], ORA_SQLMSG);
+																	}
+																	else
+																	{
+																									nInsert++;
+																									ustate=0;
+																	}
+
+									}
+
+									fclose( in);
+	}
+
+	EXEC SQL commit work;
+
+
+	return ROK;
+}
+
+
+int update_cds_user2(char *carrier, char *minnum,int ustate)
+{
+				int     i;
+				int nInsert = 0;
+				char szStrQuery[2048] = {0, };
+
+
+				EXEC SQL savepoint stas_skt_ins;
+
+				sprintf(szStrQuery, "UPDATE CDS_USER SET USERSTATE=:v1  where carrier=:v2 and min_num=:v3");
+
+				EXEC SQL PREPARE stas_skt_result FROM :szStrQuery;
+
+				EXEC SQL EXECUTE stas_skt_result USING :ustate,:carrier,:minnum;
+				if(SQLCODE != ORA_SQLOK || sqlca.sqlerrd[2] != 1)
+				{
+								printf("failed Insert : SQLCODE(%d)(%d) ORA_SQLMSG(%*s)\n", SQLCODE, sqlca.sqlerrd[2], ORA_SQLMSG);
+				}
+				else
+				{
+				//				printf("SUC %s%s %d\n",carrier,minnum,ustate);	
+				}
+
+
+				EXEC SQL commit work;
+				return ROK;
+}
+int update_cds_user3(char *carrier, char *minnum,char *mvnocorp)
+{
+				int     i;
+				int nInsert = 0;
+				char szStrQuery[2048] = {0, };
+
+
+				EXEC SQL savepoint stas_skt_ins;
+
+				sprintf(szStrQuery, "UPDATE CDS_USER SET MVNOCORP=:v1  where carrier=:v2 and min_num=:v3");
+
+				EXEC SQL PREPARE stas_skt_result FROM :szStrQuery;
+
+				EXEC SQL EXECUTE stas_skt_result USING :mvnocorp,:carrier,:minnum;
+				if(SQLCODE != ORA_SQLOK || sqlca.sqlerrd[2] != 1)
+				{
+								printf("failed Insert : SQLCODE(%d)(%d) ORA_SQLMSG(%*s)\n", SQLCODE, sqlca.sqlerrd[2], ORA_SQLMSG);
+				}
+				else
+				{
+								//printf("SUC %s%s %s\n",carrier,minnum,mvnocorp);	
+				}
+
+
+				EXEC SQL commit work;
+				return ROK;
+}
+
+
+
+
+int select_cdsuser(char *carrier,char *minnum)
+{
+				char szQuery[2048] = {0, };
+        int  ustate=0;
+				sprintf(szQuery, "%s%s%s%s'","select NVL(USERSTATE,1) from cds_user where carrier='",carrier,"' and min_num='",minnum);
+
+				EXEC SQL PREPARE select_cds_user FROM :szQuery;
+
+				EXEC SQL DECLARE select_cds_user_cur CURSOR FOR select_cds_user;
+
+				EXEC SQL OPEN select_cds_user_cur;
+
+								EXEC SQL FETCH select_cds_user_cur INTO :ustate;
+								if(SQLCODE != ORA_SQLOK)
+								{
+												EXEC SQL CLOSE select_cds_user_cur;
+												return -1;
+								}
+
+
+				EXEC SQL CLOSE select_cds_user_cur;
+
+
+				return ustate;
+}
+
+
+
+int select_cust(char *custnumber,int tablenum)
+{
+	char szQuery[2048] = {0, };
+	int  ustate=0;
+	sprintf(szQuery, "%s%d%s%s%s","select count(cust_num)  from tm_sfs_cust_0",tablenum+1,  " where cust_num='",custnumber,"'");
+
+	EXEC SQL PREPARE select_cust_user FROM :szQuery;
+
+	EXEC SQL DECLARE select_cust_user_cur CURSOR FOR select_cust_user;
+
+	EXEC SQL OPEN select_cust_user_cur;
+
+	EXEC SQL FETCH select_cust_user_cur INTO :ustate;
+	if(SQLCODE != ORA_SQLOK)
+	{
+		EXEC SQL CLOSE select_cust_user_cur;
+		return -1;
+	}
+
+
+	EXEC SQL CLOSE select_cust_user_cur;
+
+
+	return ustate;
+}
+
+void select_msg(char *table_name, char *file_name, char *select_day)
+{
+    char szQuery[2048] = {0, };
+    char sms_masage[201];
+	char srcnum[25];
+	char cbnum[25];
+	char rcv_dt[15];
+	char save_dt[15];
+	int sms_leng;
+
+	FILE *mfp = NULL;
+
+    sprintf(szQuery, "%s%s%s","select SAVE_DT, RCV_TIME, SRC_NUM, CB_NUM, replace(replace(MSG, chr(10),' '),chr(13),' '), length(MSG) from TM_SFS_SPAM_DATA where save_dt like '", select_day, "%' and SPAM_TYPE=2");
+
+	memset(sms_masage,0x00,201);
+	memset(srcnum,0x00,25);
+	memset(cbnum,0x00,25);
+	memset(rcv_dt,0x00,15);
+	memset(save_dt,0x00,15);
+
+    EXEC SQL PREPARE select_msg_user FROM :szQuery;
+
+    EXEC SQL DECLARE select_msg_user_cur CURSOR FOR select_msg_user;
+
+    EXEC SQL OPEN select_msg_user_cur;
+
+	if ((mfp = fopen(file_name, "a")) == NULL) {
+        printf("tmp ftp file Open Fail [%s]\n", file_name);
+        return;
+    }
+
+    while(1)
+	{
+        EXEC SQL FETCH select_msg_user_cur INTO :save_dt,:rcv_dt,:srcnum,:cbnum,:sms_masage,:sms_leng;
+        if(SQLCODE != ORA_SQLOK)
+        {
+            EXEC SQL CLOSE select_msg_user_cur;
+            return -1;
+        }
+
+		// printf("[%s][%s][%s][%s][%s][%d]\n", save_dt,rcv_dt,srcnum,cbnum,sms_masage,sms_leng);
+		fprintf(mfp, "%c%s%c%s%c%s%c%s%c%s%c%c%d%c%c%d%c%d%c%c%c\n", 
+			0x02, save_dt, 0x02, rcv_dt, 0x02, srcnum, 0x02, cbnum, 0x02, sms_masage, 0x02, 0x02, 1, 0x02, 0x02, sms_leng, 0x02, 1, 0x02, 0x02);
+
+		memset(sms_masage,0x00,201);
+		memset(srcnum,0x00,25);
+		memset(cbnum,0x00,25);
+		memset(rcv_dt,0x00,15);
+		memset(save_dt,0x00,15);
+	}
+
+    EXEC SQL CLOSE select_msg_user_cur;
+	fclose(mfp);
+    return;
+}

@@ -1,0 +1,78 @@
+Toad 에서 실수 commit 
+
+update문에서 검색조건을 넣지 않고 
+
+잘못된 update후 확인하지 않고 commit을 쳐버렸습니다...
+ 
+-_-;; 냐하하하하하  ㅠㅅㅠ ;;;;;;;;;;
+ 
+클라이언트쪽에서 Data가 이상하다고 문의가 오더군요.. 
+
+다른 작업중이였는데...
+ 
+ 
+ 
+Dump 파일을 받아서 하는 방법 뿐이라더군요...
+ 
+-_-;; 킁;;
+ 
+ 
+ 
+검색검색검색 .... 
+
+Dump 파일 받으며 찾았습니다...
+ 
+아래 쿼리를 - -/
+ 
+ 
+ 
+SELECT * FROM [테이블명]
+ as of timestamp ( systimestamp - interval '[00분]' minute)
+
+ 
+제가 쓰는 테이블이 ttb_table이고 2분후에 작업하던 내용을 보고싶다...
+ 
+ 
+ 
+SELECT * FROM ttb_trouble
+ as of timestamp ( systimestamp - interval '2' minute) 
+ 
+요렇게 하면 검색이 됩니다 2분전 DB로...
+ 
+ 
+ 
+그럼 -0- Dump안해도 대것죠?? 
+
+ 
+ 
+Dump만이 해결책은 아니라는겁니다... 이휴
+ 
+ 
+ 
+-----------------------------------------------------------------
+ 
+응용
+ 
+-----------------------------------------------------------------
+ 
+ 
+ 
+update ttb_trouble B
+set B.TROUBLE_TITLE = (
+SELECT trouble_title FROM ttb_trouble 
+ as of timestamp ( systimestamp - interval '200' minute) A
+ where A.trouble_id =4060)
+ 
+ 
+update TM_SFS_NOTICE_LIST
+set B.SMS_MSG = (
+SELECT SMS_MSG FROM tm_sfs_sms_082 
+ as of timestamp ( systimestamp - interval '200' minute) A
+ where A.SMS_SEQ =0190013198606292)
+
+
+ 
+200분전의 DATA로 update 칩니다.
+
+[출처] 실수로 Commit 후 DB 정보검색|작성자 아코
+

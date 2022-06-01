@@ -1,0 +1,335 @@
+#include <iostream>
+using namespace std;
+
+#include <stdio.h>
+#include <time.h>
+#define OTL_ORA11G_R2
+#include <otlv4.h>
+
+#define MAXBUF 10000
+#define MSGSIZE 200
+#define TYPENUM 4
+#define COL_NUM 4
+#define SEARCH_TERM 7
+
+otl_connect exa_db;
+
+int filesize(FILE *stream);
+void checkLeapYear(char *toDate,int month[]){
+	char temp[5];
+	int year;
+	char *end;
+	snprintf(temp,5,"%s",toDate);
+	year = strtol(temp,&end,10);
+//	printf(">>>%d>>\n",year);
+//	exit(0);
+//	printf("year is = %d\n",year);
+	if(((0==year%4) && (0!=year%100)) || (0==year%400)){
+	month[1]=29;
+	} 
+	else month[1]=28;
+}
+
+int compareSpamString(char *toDate)
+{
+	char save_dt1[15];
+	char save_dt2[15];
+	char msg_kind[2];
+	char query1[]="select MSG_KIND, MSG from SFS_MSG_LIST where SAVE_DT >=:f1<char[15]> and SAVE_DT <=:f2<char[15]> and MSG_KIND=:f3<char[3]>";
+	char beforeDate[15];
+	char *msgbuff;
+	int k,idx=0;
+	int mdays[]={31,28,31,30,31,30,31,31,30,31,30,31}; //
+	char tmp_year[5], tmp_mon[3], tmp_day[3];
+	int count=0;
+
+	msgbuff=(char*)calloc(TYPENUM*MAXBUF*MSGSIZE,sizeof(char));
+	checkLeapYear(toDate,mdays);
+
+	snprintf(tmp_year,5,"%s",toDate);
+	snprintf(tmp_mon,3,"%s",toDate+sizeof(char)*4);
+	snprintf(tmp_day,3,"%s",toDate+sizeof(char)*6);
+	
+	//--- check startDate
+	if(atoi(tmp_day)>SEARCH_TERM){
+		sprintf(beforeDate,"%s%s%.2d",tmp_year
+                                      ,tmp_mon
+                                    ,(atoi(tmp_day)-SEARCH_TERM));
+		printf("\nbeforeDate is %s\n",beforeDate);
+	}
+	else{
+		if(atoi(tmp_mon)>1){
+			sprintf(beforeDate,"%s%.2d%.2d",tmp_year
+                                      ,(atoi(tmp_mon)-1)
+                                    ,(mdays[atoi(tmp_mon-2)]-(SEARCH_TERM-atoi(tmp_day))));
+			printf("\nbeforeDate is %s\n",beforeDate);
+		}
+		else{
+        		sprintf(beforeDate,"%.2d%s%.2d",(atoi(tmp_year)-1)
+                        	              ,"12"
+                                	    ,(mdays[11]-(SEARCH_TERM-atoi(tmp_day))));
+	        	printf("\nbeforeDate is %s\n",beforeDate);
+		}
+
+	}
+	//--- check endDate
+	if(atoi(tmp_day)>1){
+		sprintf(save_dt1, "%d240000", atoi(toDate)-1);
+		sprintf(save_dt2, "%s000000", beforeDate);
+	}
+	else{
+		sprintf(save_dt1,"%s%.2d%.2d235959", &tmp_year, (atoi(tmp_mon)-1), (mdays[atoi(tmp_mon)-2]));
+		sprintf(save_dt2, "%s000000", beforeDate);
+
+	}
+
+	printf("save_dt1=%s / save_dt2=%s \n",&save_dt1, &save_dt2);
+	
+	char tmp_msg_kind[2];
+	char tmp_msg[200];
+
+//---get 4 type msg (kisa, biz, spamCenter, ad)
+//for(k=1;k<TYPENUM;k++){	
+	k=5;
+	printf("!!!start for loop !!!\n");
+	sprintf(msg_kind,"%d",k);
+	printf("msgkind is [%s] >> save_dt2 is [%s] >> save_dt1 is [%s] \n",&msg_kind, &save_dt2, &save_dt1);
+	otl_stream i(1,	query1, exa_db);
+	i << save_dt2 << save_dt1 << msg_kind;
+
+	idx=0;
+//	printf(">>>>>>%s\n",query1);
+	printf("before while !!! here \n");
+	while(!i.eof()){ // while not end-of-data
+	printf("!!! start 2nd for loop!!!\n");
+		i >> tmp_msg_kind >> tmp_msg;
+		printf("\n[%d]	[%s]	[%s]\n", idx,&tmp_msg_kind,&tmp_msg);
+	//buff에 msg_kind 1, 3,4,5 가져오기 sprintf? 	
+	//strcpy(&msgbuff[k][idx][0],&tmp_msg[0]);
+	//strcpy(msgbuff[k][idx][0],&tmp_msg[0]);
+//	printf("%s",msgbuff[k][idx][0]);
+	idx++;
+exit(0);
+	}
+	//printf(">>>>>>>>>>>>\n\n %s \n",&msgbuff[k][1][0]);
+//ㅜ	exit(0);
+//}
+
+	//---compare소스 참조
+	return 0;
+}
+
+int insertSpamString(char *option, char *filename){
+	
+	FILE *fp;
+	char buff[MAXBUF];
+	char *tempbuff1=NULL;
+        char *tempbuff2=NULL;	
+	int fsize;
+	int i, div;
+	char msg_kind[2];
+	char msg[200];
+	char recv_dt[15];
+	char save_dt[15];
+	char tmp[MAXBUF];
+	char query[] = "INSERT INTO SFS_MSG_LIST(MSG_KIND, MSG, RECV_DT, SAVE_DT) VALUES(:f1<char[2]>,:f2<char[201]>,:f3<char[15]>,:f4<char[15]>)";
+	int count=0;
+	struct tm *today;
+	char timeNow[15];
+	time_t ltime;
+	time(&ltime);
+	today  = localtime(&ltime);
+
+	sprintf(timeNow,"%4d%.2d%.2d%.2d%.2d%.2d",(today->tm_year+1900)
+                                        ,today->tm_mon+1
+                                        ,today->tm_mday
+                                        ,today->tm_hour
+                                        ,today->tm_min
+                                        ,today->tm_sec);
+	fp = fopen(filename,"rt");
+
+	fsize = filesize(fp);
+        for (i = 0; i < fsize; i++){
+                buff[i] = fgetc(fp);
+		if('\n'==buff[i]){
+		count++;
+		}
+        }
+	i=0;
+	div=0;
+	strcpy(tmp,buff);
+	tempbuff1=&tmp[0];
+
+	
+	otl_stream o(1, query, exa_db);
+	
+
+	if((tempbuff1=strtok(tempbuff1,"\n"))==NULL){
+                printf("strtok error\n");
+                exit(1);
+        }
+        else{
+		strcpy(&msg_kind[0],option);
+		strcpy(&msg[0],tempbuff1);
+		strcpy(&recv_dt[0],timeNow);
+		strcpy(&save_dt[0],timeNow);
+	
+	o << msg_kind <<  msg << recv_dt << save_dt;
+
+		i++;
+		while(i<count){
+			tempbuff2=strtok(NULL,"\n");
+			strcpy(&msg_kind[0],option);
+			strcpy(&msg[0],tempbuff2);
+			strcpy(&recv_dt[0],timeNow);
+			strcpy(&save_dt[0],timeNow);
+		o << msg_kind <<  msg << recv_dt << save_dt;
+		i++;
+		}
+	}
+	return 0;
+}
+int selectSpamString(char *option, char *startDate, char *endDate)
+{
+	char save_dt1[15];
+	char save_dt2[15];
+	char query[200];
+	char query1[110]="SELECT";
+	char query2[]="from SFS_MSG_LIST where SAVE_DT >=:f1<char[15]> and SAVE_DT <=:f2<char[15]>";
+	char subQ[100]="MSG_KIND, replace(replace(MSG,chr(10),' '),chr(13),' '), RECV_DT, SAVE_DT";
+	char title[50];
+	
+	sprintf(save_dt1, "%s000000", startDate);
+	sprintf(save_dt2, "%s235959", endDate);
+	sprintf(query,"%s %s %s",query1,subQ,query2);
+
+	otl_stream i(1,	query, exa_db );
+	i << save_dt1 << save_dt2;
+
+	char msg_kind[2];
+	char msg[200];
+	char sdate[15];
+	char rdate[15];
+
+	printf("\n\n%s\n",&title[0]);
+	if(!strcmp(option,"a")){
+	printf("MSG_KIND | MSG | RECV_DT | SAVE_DT\n");
+		while(!i.eof()){ // while not end-of-data
+			i >> msg_kind >> msg >> rdate >> sdate;
+			printf("\n [%s]	[%s]	[%s]	[%s] \n", msg_kind, msg, rdate, sdate);
+		}
+	}
+	else if(!strcmp(option,"k")){
+	printf("MSG_KIND | MSG\n");
+		while(!i.eof()){ // while not end-of-data
+			i >> msg_kind >> msg >> rdate >> sdate;
+			printf("\n [%s]	[%s] \n", msg_kind, msg);
+		}
+	}
+	else if(!strcmp(option,"d")){
+	printf("MSG_KIND | MSG | SAVE_DT\n");
+		while(!i.eof()){ // while not end-of-data
+			i >> msg_kind >> msg >> rdate >> sdate;
+			printf("\n [%s]	[%s]	[%s]\n", msg_kind, msg, sdate);
+		}
+	}
+		
+	return 0;
+}
+
+int main(int argc, char* argv[])
+{
+	int i;
+	FILE *fp1;
+	char* end;
+	char inp[2];
+	long val;
+
+	otl_connect::otl_initialize(); // initialize the database API environment
+	try{
+		exa_db.rlogon("oraasfs/oraasfs2301@asfs"); // connect to the database
+
+		if(3==argc){
+			strcpy(&inp[0],argv[1]);
+			if((inp[0]>='0') && (inp[0]<='9')){
+				if ((fp1 = fopen(argv[2], "r")) == NULL){	
+					printf("\n [!] msg file doesn't exist \n\n");
+					exit(0);
+				}
+				else{
+					insertSpamString(argv[1],argv[2]);
+				}
+			}
+			else{
+				printf("\n [!] check msg type !!\n");
+	                        printf("\n\n Insert Mode : [exe] [option] [file_name]\n");
+        	                printf(" (ex) kisa_msg_mgr 1 msg1.txt\n");
+        	                printf(" (option) \n	1 : Kisa test spam \n	2 : Kisa test HAM \n	3 : BIZ\n	4 : 전체스팸 발송현황\n	5 : 광고전문 \n\n=============\n");
+                                exit(0);
+			}
+		}
+		else if(4==argc){
+			if((strlen(argv[2])!=8) || (strlen(argv[3])!=8)){
+				printf("\n [!] check date size !!\n");
+				exit(0);
+			}
+			else if(strlen(argv[1])!=1){
+				printf("\n [!] check option !!\n");
+				exit(0);	
+			}
+			else{
+				for(i=0;i<2;i++){
+				      val = strtol(argv[i+2], &end, 10);
+				      if (end[0] && val >= 0){
+                                        printf("\n [!] date is number !!\n");
+                                        exit(0);
+      					}
+				}		
+				
+                             selectSpamString(argv[1],argv[2],argv[3]); 
+
+			}	
+				
+					
+		}
+		else if(2==argc){// message compare
+			//ddd
+			compareSpamString(argv[1]);
+
+
+
+		}
+		else{
+			printf("\n=============\n< Usage >");
+			printf("\n Select Mode : [.sh] [option ][start_date] [end_date]\n");
+			printf(" (ex) kisa_msg_mgr a 20150101 20150130\n");
+			printf(" (option) \n	a (all): select * from sfs_msg_list;\n	k (kind): select msg_kind, msg from sfs_msg_list;\n	d (date): select msg_kind, msg, save_dt from sfs_msg_list;");
+			printf("\n\n Insert Mode : [.sh] [option] [file_name]\n");
+			printf(" (ex) kisa_msg_mgr 1 msg1.txt\n");
+			printf(" (option) \n	1 : Kisa test spam \n	2 : Kisa test HAM \n	3 : BIZ\n	4 : 전체스팸 발송현황\n	5 : 광고전문 \n\n=============\n");
+			exit(0);
+		}
+
+	}
+	catch(otl_exception& p){ // intercept OTL exceptions
+		cerr<<p.msg<<endl; // print out error message
+		cerr<<p.stm_text<<endl; // print out SQL that caused the error
+		cerr<<p.var_info<<endl; // print out the variable that caused the error
+	}
+	
+	exa_db.logoff(); 
+	//printf("End\n");
+	return 0;
+}
+int filesize(FILE *stream){
+
+        long curpos, length;
+
+        curpos = ftell(stream);
+        fseek(stream, 0L, SEEK_END);
+        length = ftell(stream);
+        fseek(stream, curpos, SEEK_SET);
+
+        return (int)length;
+}
+

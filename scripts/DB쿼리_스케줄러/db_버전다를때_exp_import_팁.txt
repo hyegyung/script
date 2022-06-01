@@ -1,0 +1,31 @@
+Oracle imp version 문제
+댓글을 달아주세요 
+서로 다른 버전의 Oracle로 import/export 할 경우 에러가 발생한다.
+
+예를 들어 export를 11g client로, import를 10G client로 하는 경우 ( 서버 버전과는 무관하게 imp, exp 또는 imp.exe, exp.exe 실행 파일 자체의 버전을 따진다 ) imp와 exp는 호환성이 전혀 없다.
+
+이 경우 expdb 또는 imp 할 버전과 동일한 client로 다시 exp 받아야 하지만 사정이 여의치 않는 경우 응급조치로 문자열만 변경하여 시도해 볼 수 있다.
+
+예를 들어 11.0.2의 client로
+
+exp user_id/passwd@fromOracle  tables=aa file=aa.dmp와 같이 export 받아 10.2.0.1의 client로 import 해야 하는 경우
+
+imp user2/pass@toOracle fromuser=user_id touser=user2 file=aa.dmp ignore=y log=aa.log와 같이 실행을 한 경우
+
+IMP-00010: not a valid export file, header failed verification
+
+IMP-00000: Import terminated unsuccessfully와 같은 에러를 뱉어 내고 imp가 안되는 경우가 있는데 aa.dmp 파일을 열어보면
+
+「「NEXPORT:V11.00.02
+UUSER_ID
+
+
+RTABLES
+...와 같은 내용이 보인다.
+
+이 첫째줄의「「NEXPORT:V11.00.02를 「「NEXPORT:V10.02.01로 바꾸고 다시 import를 실행하면 되는 경우가 있다!!
+
+이 때 파일을 잘못 열어 저장하면 binary 데이터가 깨져 파일을 못 쓸수가 있으므로 먼저 데이터 파일을 백업 받고 문자열 변경은 ultra editor 같은 고성능 에디터의 “파일내에서 문자열 변경” 기능 또는 OS 상에서 파일 내 문자열을 직접 변경하는 (Linux의 sed  프로그램과 같은 ) 프로그램을 활용해야 데이터 파일이 깨져 모든 데이터를 날리는 경우를 방지할 수 있다.
+
+반드시 동일한 client를 사용하기를 권장하고 그 방법이 정상적인 방법이나 가끔은 강제로 버전을 바꿔서 실행을 해서 성공하기도 한다.
+

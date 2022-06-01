@@ -1,0 +1,192 @@
+#include "skt_table.h"
+#define USER_STATE_CHARGING_AGREE                                       (0x0001<<0)  // 1 통신과금이용 동의
+#define USER_STATE_EXCEED_LIMIT                                                 (0x0001<<1)  // 2 데이터 통화료 한도 소진자
+#define USER_STATE_INTERNET_CUTOFF_TING                         (0x0001<<2)  // 4 Ting 무선 인터넷 차단
+#define USER_STATE_INTERNET_CUTOFF_ADULT                (0x0001<<3)  // 8 성인 무선 인터넷 차단
+#define USER_STATE_PRE_CHARGING                                         (0x0001<<4)  // 16 팅부모안심 서비스(실시간과금)
+#define USER_STATE_HALT                                                                         (0x0001<<5)  // 32 일시정지 사용자
+#define USER_STATE_NON_DB_DATA                                          (0x0001<<31)  // 2^31 정보 없음
+
+
+#define MAX_USERS 63
+
+
+void set_select_date(char *szStartTime, char *szEndTime, int nIdx)
+{
+	   char szBeday[8], szCuday[8];
+
+	   memset(szBeday, 0x00, sizeof(szBeday));
+	   memset(szCuday, 0x00, sizeof(szCuday));
+
+	   get_yday(szBeday);
+	   get_tday(szCuday);
+
+	   switch(nIdx)
+	   {
+			 case 0:
+				    sprintf(szStartTime, "%s%s%s", szBeday, "00", "0000");
+				    sprintf(szEndTime, "%s%s%s", szBeday, "03", "0000");
+				    break;
+
+			 case 1:
+				    sprintf(szStartTime, "%s%s%s", szBeday, "03", "0000");
+				    sprintf(szEndTime, "%s%s%s", szBeday, "06", "0000");
+				    break;
+
+			 case 2:
+				    sprintf(szStartTime, "%s%s%s", szBeday, "06", "0000");
+				    sprintf(szEndTime, "%s%s%s", szBeday, "09", "0000");
+				    break;
+
+			 case 3:
+				    sprintf(szStartTime, "%s%s%s", szBeday, "09", "0000");
+				    sprintf(szEndTime, "%s%s%s", szBeday, "12", "0000");
+				    break;
+
+			 case 4:
+				    sprintf(szStartTime, "%s%s%s", szBeday, "12", "0000");
+				    sprintf(szEndTime, "%s%s%s", szBeday, "15", "0000");
+				    break;
+
+			 case 5:
+				    sprintf(szStartTime, "%s%s%s", szBeday, "15", "0000");
+				    sprintf(szEndTime, "%s%s%s", szBeday, "18", "0000");
+				    break;
+
+			 case 6:
+				    sprintf(szStartTime, "%s%s%s", szBeday, "18", "0000");
+				    sprintf(szEndTime, "%s%s%s", szBeday, "21", "0000");
+				    break;
+
+			 case 7:
+					sprintf(szStartTime, "%s%s%s", szBeday, "21", "0000");
+					sprintf(szEndTime, "%s%s%s", szCuday, "00", "0000");
+					break;
+
+			 default:
+					sprintf(szStartTime, "%s%s", szBeday, "000000");
+					sprintf(szEndTime, "%s%s", szCuday, "000000");
+					break;
+	   }
+}
+
+int main(int argc, char *argv[])
+{
+	int i, nIdx, nTimeIdx, nRet;
+	int nCnt = 0;
+	int s_count=0;
+	char szQuery[MAX_SIZE];
+	char szTableName[MAX_SIZE];
+	char filePath[256];
+	FILE* in;
+	int ustate = 0;
+	char num[9][16];
+        char cmd[128];
+        long long int custnum;
+
+	nRet = connect_db("oraasfs/oraasfs2301");
+	if(nRet != ROK)
+	{
+		return RFAIL;
+	}
+
+	memset(filePath, 0x00, sizeof(filePath));
+	snprintf(filePath,256,argv[1]);
+
+
+	if ( (in = fopen(filePath, "r")) == NULL)
+	{
+		printf(" Cannot open file : %s\n", filePath);
+
+		return -1;
+
+	}
+	else
+	{
+		while( 0 < fscanf( in, "%s %s", num[0],num[1]))
+		{
+			custnum = atoi(num[1]);
+			//printf("%u  %d\n",custnum,custnum%4);
+			ustate = select_cust(num[1],custnum%4); 
+                        if(ustate > 0)
+			printf("%s %s\n",num[0],num[1]);
+			//snprintf(cmd,128,"grep %s%s /app/TIG/jjaengge3.txt",num[1],num[2]);
+			//system(cmd);
+			//			printf("CDS_LOG %s %s %s %s %s %s %s %s %s\n", num[0],num[1],num[2],num[3],num[4],num[5],num[6],num[7],num[8]);
+			/*
+			   ustate = select_cdsuser(num[1],num[2]); 
+
+
+			   if(!strncmp(num[0],"I2",2)||!strncmp(num[0],"A1",2))
+			   {
+			   printf("before USERSTATE %s %s %d\n",num[1],num[2],ustate);
+			   if(atoi(num[3]))
+			   ustate = ustate| USER_STATE_CHARGING_AGREE         ;        
+			   if(atoi(num[4]))
+			   ustate=   ustate | USER_STATE_EXCEED_LIMIT;
+			   if(atoi(num[5]))
+			   ustate=   ustate | USER_STATE_INTERNET_CUTOFF_TING;
+			   if(atoi(num[6]))
+			   ustate=   ustate | USER_STATE_INTERNET_CUTOFF_ADULT;
+			   if(atoi(num[7]))
+			   ustate=   ustate | USER_STATE_PRE_CHARGING;
+			   printf("AFTER USERSTATE %d %d %d %d %d %d\n",atoi(num[3]),atoi(num[4]),atoi(num[5]),atoi(num[6]),atoi(num[7]),ustate);
+			   }
+
+			   if(!strncmp(num[0],"I3",2))
+			   {
+			   printf("before USERSTATE %s %s %d\n",num[1],num[2],ustate);
+			   if(atoi(num[3]))
+			   ustate = ustate & (MAX_USERS - 1)   ;        
+			   if(atoi(num[4]))
+			   ustate = ustate & (MAX_USERS - 2)   ;        
+			   if(atoi(num[5]))
+			   ustate = ustate & (MAX_USERS - 4)   ;        
+			   if(atoi(num[6]))
+			   ustate = ustate & (MAX_USERS - 8)   ;        
+			   if(atoi(num[7]))
+			   ustate = ustate & (MAX_USERS - 16)   ;        
+			   printf("AFTER USERSTATE %d %d %d %d %d %d\n",atoi(num[3]),atoi(num[4]),atoi(num[5]),atoi(num[6]),atoi(num[7]),ustate);
+			   }
+			   if(!strncmp(num[0],"F1",2))
+			   {
+			   printf("before USERSTATE %s %s %d\n",num[1],num[2],ustate);
+			   ustate=   ustate |  USER_STATE_HALT;;
+			   printf("AFTER USERSTATE %d %d %d %d %d %d\n",atoi(num[3]),atoi(num[4]),atoi(num[5]),atoi(num[6]),atoi(num[7]),ustate);
+			   }
+			   if(!strncmp(num[0],"F2",2))
+			   {
+			   printf("before USERSTATE %s %s %d\n",num[1],num[2],ustate);
+			   ustate = ustate & (MAX_USERS - 32)   ;        
+			   printf("AFTER USERSTATE %d %d %d %d %d %d\n",atoi(num[3]),atoi(num[4]),atoi(num[5]),atoi(num[6]),atoi(num[7]),ustate);
+			   }
+
+			//userstate = userstate | USER_STATE_CHARGING_AGREE       ;        
+			//ustate=   ustate | USER_STATE_EXCEED_LIMIT;
+			//ustate=   ustate | USER_STATE_INTERNET_CUTOFF_TING;
+			// ustate=   ustate | USER_STATE_INTERNET_CUTOFF_ADULT;
+			// ustate=   ustate | USER_STATE_PRE_CHARGING;
+			//  ustate=   ustate | USER_STATE_HALT;
+
+
+
+
+			//			printf("INSERT VALUE %s %s %d %s\n",num[1],num[2],ustate,num[9]);
+
+			nRet = update_cds_user2(num[1],num[2],ustate);
+			nRet = update_cds_user3(num[1],num[2],num[8]);
+			 */
+		}
+	}
+
+	fclose( in);
+
+	/* Disconnect DB */
+	nRet = disconnect_db();
+	if(nRet != ROK)
+	{
+		return RFAIL;
+	}
+
+	return ROK;
+}

@@ -1,0 +1,205 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.6	//
+ALLOBJS	Makefile	/^ALLOBJS = $(OBJS) $(POBJS)$/;"	m
+APPLIB	Makefile	/^APPLIB    =$/;"	m
+BIN_PATH	Makefile	/^BIN_PATH = $(HOME)\/bin$/;"	m
+C	skt_table.c	/^  \/* ub2*   *\/ short     *C; \/* Ptr to Arr of current lengths of var. names *\/$/;"	m	struct:SQLDA	file:
+CC	Makefile	/^CC   = gcc$/;"	m
+CFLAG	Makefile	/^CFLAG  = $(PKGCFLAG) $(PKGCDFVAL) -g -c -Wall$/;"	m
+CP	Makefile	/^CP   = cp$/;"	m
+F	skt_table.c	/^  \/* sb4    *\/ int        F; \/* Number of variables found by DESCRIBE       *\/$/;"	m	struct:SQLDA	file:
+F	skt_table.c	308;"	d	file:
+FGETS	skt_table.h	37;"	d
+FL	skt_table.h	30;"	d
+HSNODATA	skt_table.h	19;"	d
+I	skt_table.c	/^  \/* sb2**  *\/ short    **I; \/* Ptr to Arr of addresses of indicator vars   *\/$/;"	m	struct:SQLDA	file:
+IAPFAIL	skt_table.c	/^static const int IAPFAIL = 1403;$/;"	v	file:
+IAPFTL	skt_table.c	/^static const int IAPFTL  = 535;$/;"	v	file:
+IAPSUCC	skt_table.c	/^static const int IAPSUCC = 0;$/;"	v	file:
+INCLUDE	Makefile	/^INCLUDE   = -I. -I\/usr\/include$/;"	m
+L	skt_table.c	/^  \/* ub4*   *\/ int       *L; \/* Ptr to Arr of lengths of buffers            *\/$/;"	m	struct:SQLDA	file:
+L	skt_table.c	315;"	d	file:
+LIBS	Makefile	/^LIBS      = $(APPLIB) $(ORALIB1)  $(ORALIB2) $(SYSLIBS)$/;"	m
+M	skt_table.c	/^  \/* ub2*   *\/ short     *M; \/* Ptr to Arr of max lengths of var. names     *\/$/;"	m	struct:SQLDA	file:
+MAX_INSERT_CNT	skt_table.h	22;"	d
+MAX_PART	skt_table.h	26;"	d
+MAX_SELECT_CNT	skt_table.h	21;"	d
+MAX_SIZE	skt_table.h	24;"	d
+MAX_TABLE	skt_table.h	25;"	d
+MoveChrVal	skt_table.h	36;"	d
+MoveIntVal	skt_table.h	35;"	d
+N	skt_table.c	/^  \/* ub4    *\/ int        N; \/* Descriptor size in number of entries        *\/$/;"	m	struct:SQLDA	file:
+OBJS	Makefile	/^OBJS    = $(SRCS:.c=.o)$/;"	m
+ORACFLAG	Makefile	/^ORACFLAG  = $(ORACFLAG1) $(ORACFLAG2)$/;"	m
+ORACFLAG1	Makefile	/^ORACFLAG1 = -DPRECOMP$/;"	m
+ORAINCL	Makefile	/^ORAINCL   = $(ORAINCL1) $(ORAINCL2)$/;"	m
+ORAINCL1	Makefile	/^ORAINCL1  = -I$(ORACLE_HOME)\/precomp\/public -I$(ORACLE_HOME)\/rdbms\/public$/;"	m
+ORAINCL2	Makefile	/^ORAINCL2  = -I$(ORACLE_HOME)\/plsql\/public -I$(ORACLE_HOME)\/network\/public$/;"	m
+ORALIB1	Makefile	/^ORALIB1   = -L$(ORACLE_HOME)\/lib -lclntsh$/;"	m
+ORALIB2	Makefile	/^ORALIB2   = `cat $(ORACLE_HOME)\/lib\/sysliblist`$/;"	m
+ORA_SQLMSG	skt_table.h	33;"	d
+ORA_SQLOK	skt_table.h	18;"	d
+PCFILES	Makefile	/^PCFILES = $(PSRCS:.pc=.c)$/;"	m
+PCFLAG	Makefile	/^PCFLAG = $(PKGPCFLAG) $(PKGPCDFVAL)$/;"	m
+POBJS	Makefile	/^POBJS   = $(PSRCS:.pc=.o)$/;"	m
+PROC	Makefile	/^PROC = proc$/;"	m
+PSRCS	Makefile	/^PSRCS = skt_table.pc \\$/;"	m
+RFAIL	skt_table.h	16;"	d
+ROK	skt_table.h	15;"	d
+S	skt_table.c	/^  \/* text** *\/ char     **S; \/* Ptr to Arr of variable name pointers        *\/$/;"	m	struct:SQLDA	file:
+S	skt_table.c	312;"	d	file:
+SQLCA	skt_table.c	217;"	d	file:
+SQLCODE	skt_table.h	32;"	d
+SQLDA	skt_table.c	/^struct SQLDA {$/;"	s	file:
+SQLDA	skt_table.c	/^typedef struct SQLDA SQLDA;$/;"	t	typeref:struct:SQLDA	file:
+SQLDA_	skt_table.c	302;"	d	file:
+SQLSQLDAAlloc	skt_table.c	345;"	d	file:
+SQLSQLDAFree	skt_table.c	347;"	d	file:
+SQL_CONTEXT	skt_table.c	/^typedef void * SQL_CONTEXT;$/;"	t	file:
+SQL_CRSR	skt_table.c	4;"	d	file:
+SQL_CURSOR	skt_table.c	/^  typedef struct sql_cursor SQL_CURSOR;$/;"	t	typeref:struct:sql_cursor	file:
+SRCS	Makefile	/^SRCS = main.c skt_util.c$/;"	m
+SYSLIBS	Makefile	/^SYSLIBS   = -ldl -lpthread -lnsl -lz -lc -lm$/;"	m
+T	skt_table.c	/^  \/* sb2*   *\/ short     *T; \/* Ptr to Arr of types of buffers              *\/$/;"	m	struct:SQLDA	file:
+T	skt_table.c	305;"	d	file:
+TARGET	Makefile	/^TARGET = collectspam$/;"	m
+TIME_SLEEP	skt_table.h	28;"	d
+TMSFSSMS	skt_struct.h	/^} TmSfsSms, *TMSFSSMS;$/;"	t	typeref:struct:__tmsfssms_st_
+TMSFSSTASSKTRESULT	skt_struct.h	/^} TmSfsStasSktResult, *TMSFSSTASSKTRESULT;$/;"	t	typeref:struct:__tmsfsstassktresult_st_
+TmSfsSms	skt_struct.h	/^} TmSfsSms, *TMSFSSMS;$/;"	t	typeref:struct:__tmsfssms_st_
+TmSfsStasSktResult	skt_struct.h	/^} TmSfsStasSktResult, *TMSFSSTASSKTRESULT;$/;"	t	typeref:struct:__tmsfsstassktresult_st_
+V	skt_table.c	/^  \/* text** *\/ char     **V; \/* Ptr to Arr of addresses of main variables   *\/$/;"	m	struct:SQLDA	file:
+VARCHAR	skt_table.c	/^typedef struct { unsigned short len; unsigned char arr[1]; } VARCHAR;$/;"	t	typeref:struct:__anon1	file:
+X	skt_table.c	/^  \/* text** *\/ char     **X; \/* Ptr to Arr of ind. var. name pointers       *\/$/;"	m	struct:SQLDA	file:
+Y	skt_table.c	/^  \/* ub2*   *\/ short     *Y; \/* Ptr to Arr of max lengths of ind. var. names*\/$/;"	m	struct:SQLDA	file:
+Y	skt_table.c	319;"	d	file:
+Z	skt_table.c	/^  \/* ub2*   *\/ short     *Z; \/* Ptr to Arr of cur lengths of ind. var. names*\/$/;"	m	struct:SQLDA	file:
+__SKT_STRUCT_H__	skt_struct.h	2;"	d
+__SKT_TABLE_H__	skt_table.h	2;"	d
+__tmsfssms_st_	skt_struct.h	/^typedef struct __tmsfssms_st_ {$/;"	s
+__tmsfsstassktresult_st_	skt_struct.h	/^typedef struct __tmsfsstassktresult_st_ {$/;"	s
+adtmode	skt_table.c	/^  unsigned short adtmode; $/;"	m	struct:sqladts	file:
+adtnum	skt_table.c	/^  unsigned short adtnum;  $/;"	m	struct:sqladts	file:
+adttvn	skt_table.c	/^  sqltvn adttvn[1];       $/;"	m	struct:sqladts	file:
+adtvsn	skt_table.c	/^  unsigned int adtvsn; $/;"	m	struct:sqladts	file:
+arr	skt_table.c	/^typedef struct { unsigned short len; unsigned char arr[1]; } VARCHAR;$/;"	m	struct:__anon1	file:
+arr	skt_table.c	/^typedef struct { unsigned short len; unsigned char arr[1]; } varchar;$/;"	m	struct:__anon2	file:
+arrsiz	skt_table.c	/^   unsigned int   arrsiz;$/;"	m	struct:sqlexd	file:
+check_log_dir	skt_util.c	/^void check_log_dir(void)$/;"	f
+connect_db	skt_table.c	/^int connect_db(char *cstr)$/;"	f
+cud	skt_table.c	/^      const short *cud;$/;"	m	struct:sqlexd	file:
+curocn	skt_table.c	/^    unsigned int curocn;$/;"	m	struct:sql_cursor	file:
+db_right_trim	skt_util.c	/^void db_right_trim(char *buff)$/;"	f
+disconnect_db	skt_table.c	/^int disconnect_db(void)$/;"	f
+fillen	skt_table.c	/^  unsigned short fillen;$/;"	m	struct:sqlcxp	file:
+filnam	skt_table.c	/^           char  filnam[13];$/;"	m	struct:sqlcxp	file:
+get_day_time	skt_util.c	/^int get_day_time(char *szDayTime)$/;"	f
+get_env	skt_util.c	/^char *get_env(char *env)$/;"	f
+get_tday	skt_util.c	/^int get_tday(char *szDay)$/;"	f
+get_time	skt_util.c	/^int get_time(char *szTime)$/;"	f
+get_yday	skt_util.c	/^int get_yday(char *szDay)$/;"	f
+insert_tm_sfs_stas_skt_result	skt_table.c	/^int insert_tm_sfs_stas_skt_result(TmSfsStasSktResult *szSpamData, int nCnt)$/;"	f
+iters	skt_table.c	/^   unsigned int   iters;$/;"	m	struct:sqlexd	file:
+len	skt_table.c	/^typedef struct { unsigned short len; unsigned char arr[1]; } VARCHAR;$/;"	m	struct:__anon1	file:
+len	skt_table.c	/^typedef struct { unsigned short len; unsigned char arr[1]; } varchar;$/;"	m	struct:__anon2	file:
+logwrite	skt_util.c	/^int logwrite(char *fname, int line, const char *fmt, ...)$/;"	f
+magic	skt_table.c	/^    unsigned int magic;$/;"	m	struct:sql_cursor	file:
+main	main.c	/^int main(int argc, char *argv[])$/;"	f
+occurs	skt_table.c	/^   unsigned int   occurs;$/;"	m	struct:sqlexd	file:
+offset	skt_table.c	/^   unsigned int   offset;$/;"	m	struct:sqlexd	file:
+pFileName	skt_util.c	/^char *pFileName = "collect_spam";$/;"	v
+pInitDir	skt_util.c	/^char *pInitDir = "\/home\/sfmen\/skt";$/;"	v
+ptr1	skt_table.c	/^    void *ptr1;$/;"	m	struct:sql_cursor	file:
+ptr2	skt_table.c	/^    void *ptr2;$/;"	m	struct:sql_cursor	file:
+select_tm_sfs_sms	skt_table.c	/^int select_tm_sfs_sms(char *szQuery, TmSfsSms *pTmSfsSms, int *nTmSfsSmsCnt)$/;"	f
+selerr	skt_table.c	/^   unsigned short selerr;$/;"	m	struct:sqlexd	file:
+set_select_date	main.c	/^void set_select_date(char *szStartTime, char *szEndTime, int nIdx)$/;"	f
+sqadto	skt_table.c	/^   unsigned short  sqadto[7];$/;"	m	struct:sqlexd	file:
+sqcmod	skt_table.c	/^   unsigned int   sqcmod;$/;"	m	struct:sqlexd	file:
+sqfmod	skt_table.c	/^   unsigned int   sqfmod;$/;"	m	struct:sqlexd	file:
+sqfoff	skt_table.c	/^            int   sqfoff;$/;"	m	struct:sqlexd	file:
+sqharc	skt_table.c	/^   unsigned long  *sqharc[7];$/;"	m	struct:sqlexd	file:
+sqharm	skt_table.c	/^   unsigned long  sqharm[7];$/;"	m	struct:sqlexd	file:
+sqhstl	skt_table.c	/^   unsigned long  sqhstl[7];$/;"	m	struct:sqlexd	file:
+sqhsts	skt_table.c	/^            int   sqhsts[7];$/;"	m	struct:sqlexd	file:
+sqhstv	skt_table.c	/^   unsigned char  *sqhstv[7];$/;"	m	struct:sqlexd	file:
+sqinds	skt_table.c	/^            int   sqinds[7];$/;"	m	struct:sqlexd	file:
+sqindv	skt_table.c	/^            short *sqindv[7];$/;"	m	struct:sqlexd	file:
+sql_context	skt_table.c	/^typedef void * sql_context;$/;"	t	file:
+sql_cursor	skt_table.c	/^  struct sql_cursor$/;"	s	file:
+sql_cursor	skt_table.c	/^  typedef struct sql_cursor sql_cursor;$/;"	t	typeref:struct:sql_cursor	file:
+sqlabc	skt_table.c	/^         \/* b4  *\/ int     sqlabc;$/;"	m	struct:sqlca	file:
+sqladt	skt_table.c	/^static struct sqladts sqladt = {$/;"	v	typeref:struct:sqladts	file:
+sqladtp	skt_table.c	/^   sqladts *sqladtp;$/;"	m	struct:sqlexd	file:
+sqladts	skt_table.c	/^struct sqladts$/;"	s	file:
+sqladts	skt_table.c	/^typedef struct sqladts sqladts;$/;"	t	typeref:struct:sqladts	file:
+sqlca	skt_table.c	/^SQLCA_STORAGE_CLASS struct sqlca sqlca$/;"	v	typeref:struct:sqlca
+sqlca	skt_table.c	/^struct   sqlca$/;"	s	file:
+sqlcaid	skt_table.c	/^         \/* ub1 *\/ char    sqlcaid[8];$/;"	m	struct:sqlca	file:
+sqlcincr	skt_table.c	/^   unsigned int   sqlcincr;$/;"	m	struct:sqlexd	file:
+sqlcmax	skt_table.c	/^   unsigned int   sqlcmax;$/;"	m	struct:sqlexd	file:
+sqlcmin	skt_table.c	/^   unsigned int   sqlcmin;$/;"	m	struct:sqlexd	file:
+sqlcnowait	skt_table.c	/^   unsigned int   sqlcnowait;$/;"	m	struct:sqlexd	file:
+sqlcode	skt_table.c	/^         \/* b4  *\/ int     sqlcode;$/;"	m	struct:sqlca	file:
+sqlctimeout	skt_table.c	/^   unsigned int   sqlctimeout;$/;"	m	struct:sqlexd	file:
+sqlctx	skt_table.c	/^static unsigned int sqlctx = 333315;$/;"	v	file:
+sqlcud0	skt_table.c	/^static const short sqlcud0[] =$/;"	v	file:
+sqlcxp	skt_table.c	/^struct sqlcxp$/;"	s	file:
+sqlerrd	skt_table.c	/^         \/* b4  *\/ int     sqlerrd[6];$/;"	m	struct:sqlca	file:
+sqlerrm	skt_table.c	/^           } sqlerrm;$/;"	m	struct:sqlca	typeref:struct:sqlca::__anon3	file:
+sqlerrmc	skt_table.c	/^           \/* ub1 *\/ char           sqlerrmc[70];$/;"	m	struct:sqlca::__anon3	file:
+sqlerrml	skt_table.c	/^           \/* ub2 *\/ unsigned short sqlerrml;$/;"	m	struct:sqlca::__anon3	file:
+sqlerrp	skt_table.c	/^         \/* ub1 *\/ char    sqlerrp[8];$/;"	m	struct:sqlca	file:
+sqlest	skt_table.c	/^   unsigned char  *sqlest;$/;"	m	struct:sqlexd	file:
+sqlety	skt_table.c	/^   unsigned short sqlety;$/;"	m	struct:sqlexd	file:
+sqlexd	skt_table.c	/^static struct sqlexd {$/;"	s	file:
+sqlext	skt_table.c	/^         \/* ub1 *\/ char    sqlext[8];$/;"	m	struct:sqlca	file:
+sqlfpn	skt_table.c	/^static const struct sqlcxp sqlfpn =$/;"	v	typeref:struct:sqlcxp	file:
+sqlstm	skt_table.c	/^} sqlstm = {12,7};$/;"	v	typeref:struct:sqlexd	file:
+sqltds	skt_table.c	/^static struct sqltdss sqltds =$/;"	v	typeref:struct:sqltdss	file:
+sqltdsp	skt_table.c	/^   sqltdss *sqltdsp;$/;"	m	struct:sqlexd	file:
+sqltdss	skt_table.c	/^struct sqltdss$/;"	s	file:
+sqltdss	skt_table.c	/^typedef struct sqltdss sqltdss;$/;"	t	typeref:struct:sqltdss	file:
+sqltvn	skt_table.c	/^struct sqltvn$/;"	s	file:
+sqltvn	skt_table.c	/^typedef struct sqltvn sqltvn;$/;"	t	typeref:struct:sqltvn	file:
+sqlvsn	skt_table.c	/^   unsigned long  sqlvsn;$/;"	m	struct:sqlexd	file:
+sqlwarn	skt_table.c	/^         \/* ub1 *\/ char    sqlwarn[8];$/;"	m	struct:sqlca	file:
+sqpadto	skt_table.c	/^   unsigned short  *sqpadto;$/;"	m	struct:sqlexd	file:
+sqparc	skt_table.c	/^   unsigned long  **sqparc;$/;"	m	struct:sqlexd	file:
+sqparm	skt_table.c	/^   unsigned long  *sqparm;$/;"	m	struct:sqlexd	file:
+sqphsl	skt_table.c	/^   unsigned long  *sqphsl;$/;"	m	struct:sqlexd	file:
+sqphss	skt_table.c	/^            int   *sqphss;$/;"	m	struct:sqlexd	file:
+sqphsv	skt_table.c	/^   unsigned char  **sqphsv;$/;"	m	struct:sqlexd	file:
+sqpind	skt_table.c	/^            short **sqpind;$/;"	m	struct:sqlexd	file:
+sqpins	skt_table.c	/^            int   *sqpins;$/;"	m	struct:sqlexd	file:
+sqptdso	skt_table.c	/^   unsigned short  *sqptdso;$/;"	m	struct:sqlexd	file:
+sqtdso	skt_table.c	/^   unsigned short  sqtdso[7];$/;"	m	struct:sqlexd	file:
+stmt	skt_table.c	/^      const char  *stmt;$/;"	m	struct:sqlexd	file:
+szCbNum	skt_struct.h	/^	char szCbNum[25];$/;"	m	struct:__tmsfssms_st_
+szCbNum	skt_struct.h	/^	char szCbNum[25];$/;"	m	struct:__tmsfsstassktresult_st_
+szSaveDt	skt_struct.h	/^	char szSaveDt[15];$/;"	m	struct:__tmsfssms_st_
+szSaveDt	skt_struct.h	/^	char szSaveDt[15];$/;"	m	struct:__tmsfsstassktresult_st_
+szSmsMsg	skt_struct.h	/^	char szSmsMsg[201];$/;"	m	struct:__tmsfssms_st_
+szSmsMsg	skt_struct.h	/^	char szSmsMsg[201];$/;"	m	struct:__tmsfsstassktresult_st_
+szSmsSeq	skt_struct.h	/^	char szSmsSeq[19];$/;"	m	struct:__tmsfssms_st_
+szSmsSeq	skt_struct.h	/^	char szSmsSeq[19];$/;"	m	struct:__tmsfsstassktresult_st_
+szSpamPattern1	skt_struct.h	/^	char szSpamPattern1[31];$/;"	m	struct:__tmsfssms_st_
+szSpamPattern1	skt_struct.h	/^	char szSpamPattern1[31];$/;"	m	struct:__tmsfsstassktresult_st_
+szSpamPattern2	skt_struct.h	/^	char szSpamPattern2[31];$/;"	m	struct:__tmsfssms_st_
+szSpamPattern2	skt_struct.h	/^	char szSpamPattern2[31];$/;"	m	struct:__tmsfsstassktresult_st_
+szSrcNum	skt_struct.h	/^	char szSrcNum[25];$/;"	m	struct:__tmsfssms_st_
+szSrcNum	skt_struct.h	/^	char szSrcNum[25];$/;"	m	struct:__tmsfsstassktresult_st_
+tdsnum	skt_table.c	/^  unsigned short tdsnum; $/;"	m	struct:sqltdss	file:
+tdsval	skt_table.c	/^  unsigned char *tdsval[1]; $/;"	m	struct:sqltdss	file:
+tdsvsn	skt_table.c	/^  unsigned int tdsvsn; $/;"	m	struct:sqltdss	file:
+tvnnm	skt_table.c	/^  unsigned char *tvnnm;$/;"	m	struct:sqltvn	file:
+tvnnml	skt_table.c	/^  unsigned short tvnnml; $/;"	m	struct:sqltvn	file:
+tvnsnm	skt_table.c	/^  unsigned char *tvnsnm;$/;"	m	struct:sqltvn	file:
+tvnsnml	skt_table.c	/^  unsigned short tvnsnml;$/;"	m	struct:sqltvn	file:
+tvnvsn	skt_table.c	/^  unsigned char *tvnvsn; $/;"	m	struct:sqltvn	file:
+tvnvsnl	skt_table.c	/^  unsigned short tvnvsnl; $/;"	m	struct:sqltvn	file:
+varchar	skt_table.c	/^typedef struct { unsigned short len; unsigned char arr[1]; } varchar;$/;"	t	typeref:struct:__anon2	file:

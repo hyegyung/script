@@ -1,0 +1,10 @@
+com
+.com
+net
+.net
+co.kr
+.co.kr
+go.kr
+.go.kr
+org
+.org

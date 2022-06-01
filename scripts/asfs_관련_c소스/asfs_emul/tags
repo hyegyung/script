@@ -1,0 +1,85 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+CC	Makefile	/^CC = gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS = -g -t -lpthread -Wall$/;"	m
+ESME_BNDRCV	emul.h	19;"	d
+ESME_BNDRCV_RESP	emul.h	20;"	d
+ESME_QRYLINK	emul.h	24;"	d
+ESME_QRYLINK_RESP	emul.h	25;"	d
+ESME_ROK	emul.h	18;"	d
+ESME_SVCREQ_RESP	emul.h	23;"	d
+HSINT	emul.h	/^typedef short int             HsInt,              *HSINT;$/;"	t
+HsInt	emul.h	/^typedef short int             HsInt,              *HSINT;$/;"	t
+OBJS	Makefile	/^OBJS = emul.o$/;"	m
+PROGRAM	Makefile	/^PROGRAM = asfs_emul$/;"	m
+SMPP_MESSAGE_HEADER_LEN	emul.h	21;"	d
+SMSC_SVCREQ	emul.h	22;"	d
+SMS_HAM	emul.h	27;"	d
+SMS_NONE	emul.h	26;"	d
+SMS_SPAM	emul.h	28;"	d
+SRCS	Makefile	/^SRCS = emul.c $/;"	m
+STRLEN	emul.h	17;"	d
+SmppBody	emul.h	/^} SmppBody;                    \/* Total : 384                  *\/$/;"	t	typeref:struct:__smscreqbody_st_
+SmppHeader	emul.h	/^struct SmppHeader {$/;"	s
+SmppMessage	emul.h	/^struct SmppMessage {$/;"	s
+SmscRsp	emul.h	/^} SmscRsp;$/;"	t	typeref:struct:__smscrsp_st_
+SmscRspBody	emul.h	/^} SmscRspBody;$/;"	t	typeref:struct:__smscrspbody_st_
+TAG_ACTION	emul.h	33;"	d
+TAG_CALLBACK	emul.h	29;"	d
+TAG_SMSMSG	emul.h	32;"	d
+TAG_SMSTIME	emul.h	31;"	d
+TAG_TELSVCTID	emul.h	30;"	d
+TlvInt	emul.h	/^} TlvInt;                  \/*  Total : 6               *\/$/;"	t	typeref:struct:__tlvint_st_
+__smscreqbody_st_	emul.h	/^typedef struct __smscreqbody_st_ {$/;"	s
+__smscrsp_st_	emul.h	/^typedef struct __smscrsp_st_ {                  $/;"	s
+__smscrspbody_st_	emul.h	/^typedef struct __smscrspbody_st_ {      $/;"	s
+__tlvint_st_	emul.h	/^typedef struct __tlvint_st_ {$/;"	s
+body	emul.h	/^	SmscRspBody     body;                       \/* smpp body                    *\/$/;"	m	struct:__smscrsp_st_
+body	emul.h	/^	void *body;                $/;"	m	struct:SmppMessage
+callback_min	emul.h	/^	char        callback_min[22];               \/* Callback Number  => H'0381   *\/$/;"	m	struct:__smscreqbody_st_
+callback_url	emul.h	/^	char        callback_url[64];               \/* Callback URL은 TID로 구분    *\/$/;"	m	struct:__smscreqbody_st_
+command_id	emul.h	/^	int32_t command_id;$/;"	m	struct:SmppHeader
+command_length	emul.h	/^	int32_t command_length;$/;"	m	struct:SmppHeader
+command_status	emul.h	/^	int32_t command_status;$/;"	m	struct:SmppHeader
+conn_proxyA	emul.c	/^static int conn_proxyA(int sock, const char *addr, uint16_t port, int timeout)$/;"	f	file:
+cre_bind_recv	emul.c	/^static void cre_bind_recv(struct SmppMessage *bindReceiver,char interface_version, char addr_ton, char addr_npi)$/;"	f	file:
+dest_addr_npi	emul.h	/^	unsigned char      dest_addr_npi;$/;"	m	struct:__smscreqbody_st_
+dest_addr_ton	emul.h	/^	unsigned char      dest_addr_ton;$/;"	m	struct:__smscreqbody_st_
+destination_addr	emul.h	/^	char        destination_addr[21];           \/* 착신번호 memory hole 1 byte  *\/$/;"	m	struct:__smscreqbody_st_
+destination_addr	emul.h	/^	char        destination_addr[21];           \/* 착신번호 memory hole 1 byte  *\/$/;"	m	struct:__smscrspbody_st_
+emul_start	emul.c	/^static void *emul_start(void *arg)$/;"	f	file:
+evalueate_bind_receiver_resp	emul.c	/^static int evalueate_bind_receiver_resp(struct SmppHeader *bindReceiver, struct SmppHeader *bindReceiverResp)$/;"	f	file:
+get_detachstate_thread_attr	emul.c	/^static pthread_attr_t *get_detachstate_thread_attr(int state)$/;"	f	file:
+head	emul.h	/^	struct SmppHeader  head;                       \/* smpp header                  *\/$/;"	m	struct:__smscrsp_st_	typeref:struct:__smscrsp_st_::SmppHeader
+header	emul.h	/^	struct SmppHeader *header; $/;"	m	struct:SmppMessage	typeref:struct:SmppMessage::SmppHeader
+length	emul.h	/^	HsInt       length;             \/* Value Length             *\/$/;"	m	struct:__tlvint_st_
+main	emul.c	/^int main(int argc, char *argv[])$/;"	f
+message	emul.h	/^	unsigned char *message;    $/;"	m	struct:SmppMessage
+msg_id	emul.h	/^	char        msg_id[10];                     \/* Message ID                   *\/$/;"	m	struct:__smscrspbody_st_
+msg_id	emul.h	/^	char        msg_id[9];                      \/* Message ID                   *\/$/;"	m	struct:__smscreqbody_st_
+nb_recv	emul.c	/^int nb_recv(int sock, void *buf, size_t buf_size, int timeout)$/;"	f
+nb_send	emul.c	/^int nb_send(int sock, void *buf, size_t buf_size, int timeout)$/;"	f
+recv_mes_from_asfsGw	emul.c	/^static void recv_mes_from_asfsGw(int sock)$/;"	f	file:
+recv_smpp_message	emul.c	/^static int recv_smpp_message(int sockfd, unsigned char *msg_buf, int buf_len, int timeout)$/;"	f	file:
+sequence_no	emul.h	/^	int32_t sequence_no;$/;"	m	struct:SmppHeader
+service_id	emul.h	/^	char        service_id[6];                  \/* Service ID                   *\/$/;"	m	struct:__smscreqbody_st_
+service_id	emul.h	/^	char        service_id[6];                  \/* Service ID                   *\/$/;"	m	struct:__smscrspbody_st_
+smpp_enquire_link_resp	emul.c	/^static int smpp_enquire_link_resp(int sockfd, int sequence_no, int timeout)$/;"	f	file:
+sms_len	emul.h	/^	int         sms_len;                        \/* SMS Length                   *\/$/;"	m	struct:__smscreqbody_st_
+sms_msg	emul.h	/^	char        sms_msg[200];                   \/* SMS Message(max:200)         *\/$/;"	m	struct:__smscreqbody_st_
+sms_time	emul.h	/^	char        sms_time[15];                   \/* SMS Time(max:14) => H'0383   *\/$/;"	m	struct:__smscreqbody_st_
+sms_type	emul.h	/^	char        sms_type;                       \/* 1:일반SMS,2:MMS byte : 2     *\/$/;"	m	struct:__smscreqbody_st_
+smsc_seq	emul.h	/^	int         smsc_seq;                       \/* SMSC Seqence Number          *\/$/;"	m	struct:__smscreqbody_st_
+source_addr	emul.h	/^	char        source_addr[21];                \/* 발신번호(누가)               *\/$/;"	m	struct:__smscrspbody_st_
+source_addr	emul.h	/^	char        source_addr[22];                \/* 발신번호(누가)               *\/$/;"	m	struct:__smscreqbody_st_
+source_addr_npi	emul.h	/^	unsigned char      source_addr_npi;$/;"	m	struct:__smscreqbody_st_
+source_addr_ton	emul.h	/^	unsigned char      source_addr_ton;$/;"	m	struct:__smscreqbody_st_
+svr_ip	emul.c	/^char svr_ip[100];$/;"	v
+tag	emul.h	/^	HsInt       tag;                \/* Service Type: service id *\/$/;"	m	struct:__tlvint_st_
+telsvc_id	emul.h	/^	char        telsvc_id[12];                  \/* TeleserviceID(max:8)=>H'0382 *\/$/;"	m	struct:__smscreqbody_st_
+tlv_action	emul.h	/^	TlvInt      tlv_action;                     \/* action result                *\/$/;"	m	struct:__smscrspbody_st_
+val	emul.h	/^	HsInt       val;                \/* max size 2               *\/$/;"	m	struct:__tlvint_st_

@@ -1,0 +1,23 @@
+
+init_connect = SET collation_connection = euckr_korean_ci
+init_connect = SET NAMES euckr
+default-character-set = euckr
+character-set-server = euckr
+collation-server = euckr_korean_ci
+
+character-set-client-handshake = FALSE 
+init_connect = "SET collation_connection = euckr_korean_ci" 
+init_connect = "SET NAMES euckr" 
+default-character-set = euckr 
+character-set-server = euckr 
+collation-server = euckr_korean_ci 
+
+
+
+root@namenode:/usr# find / -name my.cnf
+/usr/local/mysql-5.5.27/mysql-test/suite/federated/my.cnf
+/usr/local/mysql-5.5.27/mysql-test/suite/rpl/my.cnf
+/usr/local/mysql/mysql-test/suite/federated/my.cnf
+/usr/local/mysql/mysql-test/suite/rpl/my.cnf
+/etc/mysql/my.cnf
+/etc/my.cnf

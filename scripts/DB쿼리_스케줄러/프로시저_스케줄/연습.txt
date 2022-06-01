@@ -1,0 +1,69 @@
+
+====== 1.저장 프로시져 생성
+
+-------------------(원본) 실행x --> delete 쿼리내부에 date_sub함수 작동 않되는 듯 함!
+delimiter $$
+DROP PROCEDURE IF EXISTS tmap_service.proc_delete_data$$
+CREATE PROCEDURE tmap_service.proc_delete_data() 	
+	BEGIN
+	
+	DECLARE var_temp INT(11);
+	DECLARE var_del_cycle VARCHAR(20) DEFAULT '2';
+	
+	SET var_temp = (SELECT del_cycle FROM tmap_service_config);
+	SET var_del_cycle = (SELECT concat(var_temp,' ','year'));
+	
+	DELETE FROM TMAP_QI_FROM_MOBILE
+   	WHERE date_format(str_to_date(date,'%Y%m%d%h%i%s'),'%Y-%m-%d %h:%i:%s') < date_sub(sysdate(), INTERVAL var_del_cycle);							
+ 	
+	END $$
+delimiter ;
+call proc_delete_data;
+
+
+
+====== 2.이벤트 스케쥴러(프로시져 자동 수행)
+
+delimiter $$
+
+DROP EVENT IF EXISTS schedule_tview_delete;			//==> 옵션
+CREATE EVENT IF NOT EXISTS schedule_tview_delete
+    ON SCHEDULE
+        EVERY 1 DAY STARTS CURRENT_TIMESTAMP + INTERVAL 6 HOUR  //==>00시05분 되기 6시간전에 수행하면 가능?
+
+    DO CALL proc_delete_data();	
+    END $$
+
+delimiter ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

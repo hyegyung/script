@@ -1,0 +1,3 @@
+DROP FUNCTION IF EXISTS tmap_service.SPLIT_STRING;
+CREATE FUNCTION tmap_service.`SPLIT_STRING`( x text, delim varchar(32), pos int ) RETURNS text CHARSET utf8
+RETURN CAST(SUBSTRING_INDEX(SUBSTRING_INDEX(x, delim, pos), delim, -1) AS UNSIGNED);
